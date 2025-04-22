@@ -78,11 +78,11 @@ def encrypt_file_rsa(file_data, public_key_path):
     )
     return encrypted_file
 
-def decrypt_file_rsa(encrypted_data, private_key_path):
+def decrypt_file_rsa(encrypted_data, private_key_path, password = b'private'):
     with open(private_key_path, 'rb') as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
-            password = b'private',
+            password = password,
             backend = default_backend()
         )
     decrypted_file = private_key.decrypt(
@@ -112,11 +112,11 @@ def compute_data_hash(data):
     return sha256_hash.hexdigest()
     
 
-def sign_file(file_data, private_key_path):
+def sign_file(file_data, private_key_path, password = b'private'):
     with open(private_key_path, 'rb') as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
-            password = b'private',
+            password = password,
             backend = default_backend()
         )
 
@@ -181,11 +181,57 @@ def main():
 
 
 if __name__ == "__main__":
-    data = compute_data_hash("hello")
-    file = compute_file_hash("hello.txt")
-    print(data)
-    print(file)
-    if data == file:
-        print("same")
+    # aes_key = os.urandom(32)
+    # print("AES key: ", aes_key)
+
+    with open("C:/ota_code/test.txt", 'rb') as file:
+        file_data = file.read()
+    print("Plain text: ", file_data)
+
+    # # 암호화
+    # iv, encrypt_file_data = encrypt_file_aes(file_data, aes_key)
+    # print("AES Encrypted text: ", encrypt_file_data)
+
+    # # 복호화
+    # decrypt_file_data = decrypt_file_aes(encrypt_file_data, aes_key, iv)
+    # print("AES Decrypted text: ", decrypt_file_data)
+
+    # RSA 키 생성 : key 디렉터리와 내부에 Public_key1.penm, Private_key1.pem 생성됨
+    #rsa_key_generation()
+
+    # # 공개키로 암호화
+    # encrypt_file_data = encrypt_file_rsa(file_data, "C:/ota_code/web/key/Public_key1.pem")
+    # print("RSA Encrypted text: ", encrypt_file_data)
+
+    # # 개인키로 복호화
+    # decrypt_file_data = decrypt_file_rsa(encrypt_file_data, "C:/ota_code/web/key/Private_key1.pem")
+    # print("RSA Decrypted text: ", decrypt_file_data)
+
+    # # 키 전자서명
+    # signature = sign_file(file_data, "C:/ota_code/web/key/Private_key1.pem", b'private')
+    # print("Signature of the file: ", signature)
+
+    # # 전자서명 검증
+    # if verify_sign(signature, file_data, "C:/ota_code/web/key/Public_key1.pem"):
+    #     print("Verify success")
+    # else:
+    #     print("Verify failed")
+
+    # # 전자서명 실패 테스트
+    # with open('C:/ota_code/web/fake_private_key.txt', 'rb') as file:
+    #     fake_signature = file.read()
+    # if verify_sign(fake_signature, file_data, "C:/ota_code/web/key/Public_key1.pem"):
+    #     print("Verify success")
+    # else:
+    #     print("Verify failed")
+
+
+    hash_data = compute_data_hash(file_data)
+    print("Hash data : ", hash_data)
+    hash_file = compute_file_hash("C:/ota_code/test.txt")
+    print("Hash File : ", hash_file)
+
+    if hash_data == hash_file:
+        print("Hash data is same")
     else:
-        print("not same")
+        print("Hash data is different")
