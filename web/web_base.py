@@ -69,13 +69,40 @@ def upload_file():
         uploaded_file.save(file_path)
 
 
+
+        ######################## 개인키 파일을 보내려고 하는 파일과 함께 업로드 후, 서명하는 것이 올바른듯(아래는 아님)
+        # 파일 신뢰성 검증
+        file_data = uploaded_file.read()  # bytes로 읽기
+        private_key_path = "C:/ota_code/web/key/Private_key1.pem"
+        signature = sign_file(file_data, private_key_path, b'private')  # 정상 서명
+        fake_signature = os.urandom(256)    # 거짓된 서명 (테스트용)
+        # 서버에서 파일을 받으면       # signature 자리에 fake_signature 넣으면 거짓 서명 테스트 가능
+        if verify_sign(signature, file_data, "C:/ota_code/web/key/Public_key1.pem"): 
+            print("✅ 신뢰된 파일입니다.")
+        else:
+            print("❌ 신뢰되지 않은 파일입니다.")
+            return redirect(url_for('upload_form'))
+        
+        # 서명 저장
+        signature_path = "C:/ota_code/signature_file.txt"
+        save_signature(signature, signature_path)
+        
+        ########################
+
         broker_ip = '192.168.137.104'
-        send_file_to_broker(file_path, broker_ip, username, password)
+        send_file_to_broker(file_path, broker_ip, username, password)      # 그냥 파일 보내기
+        #send_file_to_broker(signature_path, broker_ip, username, password)  # 서명 파일 보내기
+
 
 
         flash(f"File '{uploaded_file .filename}' 성공적으로 업로드 되었습니다!")
         return redirect(url_for('upload_form'))
         
+def save_signature(signature, signature_path):
+    with open(signature_path, 'wb') as signature_file:
+        signature_file.write(signature)
+    print(f"Signature saved to: {signature_path}")
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

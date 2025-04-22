@@ -207,7 +207,7 @@ if __name__ == "__main__":
     # decrypt_file_data = decrypt_file_rsa(encrypt_file_data, "C:/ota_code/web/key/Private_key1.pem")
     # print("RSA Decrypted text: ", decrypt_file_data)
 
-    # # 키 전자서명
+    # 키 전자서명
     # signature = sign_file(file_data, "C:/ota_code/web/key/Private_key1.pem", b'private')
     # print("Signature of the file: ", signature)
 
@@ -225,13 +225,13 @@ if __name__ == "__main__":
     # else:
     #     print("Verify failed")
 
+    # # 해시 변환한 것과 파일 비교
+    # hash_data = compute_data_hash(file_data)
+    # print("Hash data : ", hash_data)
+    # hash_file = compute_file_hash("C:/ota_code/test.txt")
+    # print("Hash File : ", hash_file)
 
-    hash_data = compute_data_hash(file_data)
-    print("Hash data : ", hash_data)
-    hash_file = compute_file_hash("C:/ota_code/test.txt")
-    print("Hash File : ", hash_file)
-
-    if hash_data == hash_file:
-        print("Hash data is same")
-    else:
-        print("Hash data is different")
+    # if hash_data == hash_file:
+    #     print("Hash data is same")
+    # else:
+    #     print("Hash data is different")

@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import os
 import base64
 
+
 topic = "topic"
 name_topic = "updates/name"
 file_topic = "updates/file"
