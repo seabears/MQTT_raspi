@@ -90,7 +90,7 @@ def transmit():
             data_type = bytearray(data, 'utf-8')
             chunks = split_data_into_chunks(data_type, chunk_size=8)
             for chunk in chunks:
-                transmitter.transmit_data(id=0x123, data=chunk)
+                transmitter.transmit_data(id=0x7B, data=chunk)
                 print(f"Transmitted chunk: {chunk}")
                 time.sleep(0.2)
 
@@ -103,9 +103,12 @@ def receive():
     receiver = Kvaser()
     try:
         while True:
-            frame = receiver.read(id=0x123)
+            frame = receiver.read(id=0x7A) #frame = receiver.read(id=0x123)
+            frame2 = receiver.read(id=0x80)
             if frame:
                 print(f"Received data: {frame.data}")
+            elif frame2:
+                print(f"Received data: {frame2.data}")
             else:
                 print("No data received")
     except KeyboardInterrupt:
@@ -118,5 +121,5 @@ def main():
   #kvaser 활용하여 CAN 전송 혹은 읽기 작성
 
 if __name__ == "__main__":
-    transmit()
-    #receive()
+    #transmit()
+    receive()
